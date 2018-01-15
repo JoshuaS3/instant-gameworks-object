@@ -15,27 +15,23 @@ namespace InstantGameworksObject
         {
             return value.Contains(".") ? value.TrimEnd('0').TrimEnd('.') : value;
         }
-        public static void CompressFile(string path)
+        private static string Precision(string num, int precision)
         {
-            FileStream sourceFile = File.OpenRead(path);
-            FileStream destinationFile = File.Create(path + ".igwo");
-
-            byte[] buffer = new byte[sourceFile.Length];
-            sourceFile.Read(buffer, 0, buffer.Length);
-
-            using (GZipStream output = new GZipStream(destinationFile,
-                CompressionMode.Compress))
-            {
-                output.Write(buffer, 0, buffer.Length);
-            }
-
-            // Close the files.
-            sourceFile.Close();
-            destinationFile.Close();
+            float newNum = float.Parse(num);
+            double mult = Math.Pow(10, precision);
+            double result = Math.Truncate(mult * newNum) / mult;
+            return result.ToString();
+        }
+        private static string Scale(string num, float scale)
+        {
+            float newNum = float.Parse(num);
+            return Precision((newNum * scale).ToString(), 0);
         }
         public static string OBJtoIGWO(string[] OBJContent)
         {
             string IGWOContent = "~Instant Gameworks\n";
+
+            float scale = 1000f;
 
             bool isVertexData = false;
             bool isColorData = false;
@@ -69,10 +65,10 @@ namespace InstantGameworksObject
                     if (splitLine.Length == 6)
                     {
                         isColorData = true;
-                        colorLine = string.Concat(Normalize(splitLine[3]), " ", Normalize(splitLine[4]), " ", Normalize(splitLine[5]));
+                        colorLine = string.Concat(Precision(Normalize(splitLine[3]), 2), " ", Precision(Normalize(splitLine[4]),2), " ", Precision(Normalize(splitLine[5]), 2));
                         vertexColors.Add(colorLine);
                     }
-                    adjustedLine = string.Concat(Normalize(splitLine[0]), " ", Normalize(splitLine[1]), " ", Normalize(splitLine[2]));
+                    adjustedLine = string.Concat(Scale(Normalize(splitLine[0]), scale), " ", Scale(Normalize(splitLine[1]), scale), " ", Scale(Normalize(splitLine[2]), scale));
                     vertices.Add(adjustedLine);
                 }
                 else if (line.StartsWith("vn "))
@@ -80,7 +76,7 @@ namespace InstantGameworksObject
                     isNormalData = true;
                     adjustedLine = line.Substring(3);
                     splitLine = adjustedLine.Split(new[] { ' ' });
-                    adjustedLine = string.Concat(Normalize(splitLine[0]), " ", Normalize(splitLine[1]), " ", Normalize(splitLine[2]));
+                    adjustedLine = string.Concat(Precision(Normalize(splitLine[0]), 2), " ", Precision(Normalize(splitLine[1]), 2), " ", Precision(Normalize(splitLine[2]),2));
                     vertexNormals.Add(adjustedLine);
                 }
                 else if (line.StartsWith("vt "))
@@ -88,7 +84,7 @@ namespace InstantGameworksObject
                     isTextureData = true;
                     adjustedLine = line.Substring(3);
                     splitLine = adjustedLine.Split(new[] { ' ' });
-                    adjustedLine = string.Concat(Normalize(splitLine[0]), " ", Normalize(splitLine[1]), " ", Normalize(splitLine[2]));
+                    adjustedLine = string.Concat(Precision(Normalize(splitLine[0]),2), " ", Precision(Normalize(splitLine[1]),2), " ", Precision(Normalize(splitLine[2]),2));
                     vertexNormals.Add(adjustedLine);
                 }
                 else if (line.StartsWith("f "))
@@ -164,6 +160,8 @@ namespace InstantGameworksObject
             }
 
 
+
+            IGWOContent += "~scale factor: " + scale;
 
 
             if (isVertexData)
