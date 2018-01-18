@@ -55,6 +55,8 @@ namespace InstantGameworksObject
             string[] splitLine;
             string colorLine;
 
+            Console.WriteLine("Sorting data");
+
             foreach (string line in OBJContent) //Sort into groups
             {
                 if (line.StartsWith("v "))
@@ -101,6 +103,9 @@ namespace InstantGameworksObject
             string[] sortedFaces = new string[faces.Count];
             int sfi = 0;
 
+
+            Console.WriteLine("Parsing faces");
+
             foreach (string face in faces) //  "v1 v2 v3"
             {
                 string[] theseVertices = face.Split(new[] { ' ' });
@@ -138,31 +143,32 @@ namespace InstantGameworksObject
                 sfi++;
             }
 
-            foreach (string vertex in sortedVertices)
-            {
-                vertexData += vertex + ";";
-            }
-            foreach (string color in vertexColors)
-            {
-                vertexColorData += color + ";";
-            }
-            foreach (string normal in sortedNormals)
-            {
-                vertexNormalData += normal + ";";
-            }
-            foreach (string texdata in sortedTextureCoords)
-            {
-                vertexTextData += texdata + ";";
-            }
-            foreach (string face in sortedFaces)
-            {
-                faceData += face + ";";
-            }
+            Console.WriteLine("Reformatting data                      ");
 
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.WriteLine("Reformatting data (Positions)          ");
+            vertexData = string.Join(";", sortedVertices);
 
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.WriteLine("Reformatting data (Colors)             ");
+            vertexColorData = string.Join(";", vertexColors);
+
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.WriteLine("Reformatting data (Normals)            ");
+            vertexNormalData = string.Join(";", sortedNormals);
+
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.WriteLine("Reformatting data (Texture Coordinates)");
+            vertexTextData = string.Join(";", sortedTextureCoords);
+
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.WriteLine("Reformatting data (Faces)              ");
+            faceData = string.Join(";", sortedFaces);
 
             IGWOContent += "~scale factor: " + scale;
 
+
+            Console.WriteLine("Compositing data");
 
             if (isVertexData)
             {

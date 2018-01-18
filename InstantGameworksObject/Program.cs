@@ -33,11 +33,23 @@ namespace InstantGameworksObject
                     
                     foreach (string file in fileNames)
                     {
+                        Console.WriteLine("Begin " + Path.GetFileName(file));
+
+                        long Beginning = DateTime.Now.Ticks / 10000000;
+
                         string output = Convert.OBJtoIGWO(File.ReadAllLines(file));
+
+                        Console.WriteLine("Writing file");
+
                         FileStream a = new FileStream(outputPath + @"\" + Path.GetFileNameWithoutExtension(file) + ".igwo", FileMode.Create);
                         BinaryWriter b = new BinaryWriter(a);
                         b.Write(output);
+                        b.Close();
+
                         Console.WriteLine(outputPath + @"\" + Path.GetFileNameWithoutExtension(file) + ".igwo");
+                        
+                        Console.WriteLine("Finished (" + (DateTime.Now.Ticks / 10000000 - Beginning) + " seconds)");
+                        
                     }
                     Console.WriteLine("Success!");
                     Console.Write("Press any key to continue . . . ");
