@@ -165,7 +165,7 @@ namespace InstantGameworksObject
             Console.WriteLine("Reformatting data (Faces)              ");
             faceData = string.Join(";", sortedFaces);
 
-            IGWOContent += "~scale factor: " + scale;
+            IGWOContent += "~scale factor: " + scale + "\n";
 
 
             Console.WriteLine("Compositing data");
