@@ -5,12 +5,98 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.IO;
-using System.IO.Compression;
 
 namespace InstantGameworksObject
 {
-    class Convert
+    class InstantGameworksObject
     {
+        struct InstantGameworksObjectData
+        {
+            public float ScaleFactor;
+
+            public Position[] Positions;
+            public Color[] Colors;
+            public TextureCoordinates[] TextureCoordinates;
+            public Position[] Normals;
+
+            public Face[] Faces;
+        }
+        struct Position
+        {
+            public float X { get; set; }
+            public float Y { get; set; }
+            public float Z { get; set; }
+            public float W { get; set; }
+            Position(float x, float y, float z)
+            {
+                X = x;
+                Y = y;
+                Z = z;
+                W = 1;
+            }
+            Position(float x, float y, float z, float w)
+            {
+                X = x;
+                Y = y;
+                Z = z;
+                W = w;
+            }
+        }
+        struct Color
+        {
+
+            public float R { get; set; }
+            public float G { get; set; }
+            public float B { get; set; }
+            public float A { get; set; }
+            Color(float r, float g, float b)
+            {
+                R = r;
+                G = g;
+                B = b;
+                A = 1f;
+            }
+            Color(float r, float g, float b, float a)
+            {
+                R = r;
+                G = g;
+                B = b;
+                A = a;
+            }
+        }
+        struct TextureCoordinates
+        {
+
+            public float U { get; set; }
+            public float V { get; set; }
+            public float W { get; set; }
+            TextureCoordinates(float u, float v)
+            {
+                U = u;
+                V = v;
+                W = 0;
+            }
+            TextureCoordinates(float u, float v, float w)
+            {
+                U = u;
+                V = v;
+                W = w;
+            }
+        }
+        struct Vertex
+        {
+            public int PositionIndex; //Where in the Positions list can I find this data? (gets rid of repitition)
+            public int ColorIndex;
+            public int TextureCoordinatesIndex;
+            public int NormalIndex;
+        }
+        struct Face
+        {
+            Vertex[] Vertices;
+        }
+
+        
+
         private static string Normalize(string value)
         {
             return value.Contains(".") ? value.TrimEnd('0').TrimEnd('.') : value;
@@ -142,31 +228,31 @@ namespace InstantGameworksObject
                 sortedFaces[sfi] = thisFaceData.Substring(0, thisFaceData.Length - 1);
                 sfi++;
             }
-
-            Console.WriteLine("Reformatting data                      ");
-
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            
+            
             Console.WriteLine("Reformatting data (Positions)          ");
-            vertexData = string.Join(";", sortedVertices);
+            vertexData += string.Join(";", sortedVertices) + ";";
+            
 
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
             Console.WriteLine("Reformatting data (Colors)             ");
-            vertexColorData = string.Join(";", vertexColors);
+            vertexColorData += string.Join(";", vertexColors) + ";";
+            
 
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
             Console.WriteLine("Reformatting data (Normals)            ");
-            vertexNormalData = string.Join(";", sortedNormals);
+            vertexNormalData += string.Join(";", sortedNormals) + ";";
+            
 
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
             Console.WriteLine("Reformatting data (Texture Coordinates)");
-            vertexTextData = string.Join(";", sortedTextureCoords);
+            vertexTextData += string.Join(";", sortedTextureCoords) + ";";
+            
 
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
             Console.WriteLine("Reformatting data (Faces)              ");
-            faceData = string.Join(";", sortedFaces);
+            faceData += string.Join(";", sortedFaces) + ";";
 
-            IGWOContent += "~scale factor: " + scale + "\n";
 
+
+
+            IGWOContent += "~scale factor: " + scale;
 
             Console.WriteLine("Compositing data");
 
