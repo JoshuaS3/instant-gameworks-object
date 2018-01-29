@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,27 +32,27 @@ namespace InstantGameworksObject
                 {
 
                     string outputPath = outputDialog.SelectedPath;
-                    
+
+                    IFormatter formatter = new BinaryFormatter();
+
+                    long Beginning = DateTime.Now.Ticks / 10000000;
                     foreach (string file in fileNames)
                     {
                         Console.WriteLine("Begin " + Path.GetFileName(file));
 
-                        long Beginning = DateTime.Now.Ticks / 10000000;
-
-                        string output = Convert.OBJtoIGWO(File.ReadAllLines(file));
+                        var output = InstantGameworksObject.ConvertOBJToIGWO(File.ReadAllLines(file));
 
                         Console.WriteLine("Writing file");
 
-                        FileStream a = new FileStream(outputPath + @"\" + Path.GetFileNameWithoutExtension(file) + ".igwo", FileMode.Create);
-                        BinaryWriter b = new BinaryWriter(a);
-                        b.Write(output);
-                        b.Close();
+                        Stream fileOutputStream = new FileStream(outputPath + @"\" + Path.GetFileNameWithoutExtension(file) + ".igwo", FileMode.Create, FileAccess.Write, FileShare.None);
+                        formatter.Serialize(fileOutputStream, output);
+
 
                         Console.WriteLine(outputPath + @"\" + Path.GetFileNameWithoutExtension(file) + ".igwo");
-                        
-                        Console.WriteLine("Finished (" + (DateTime.Now.Ticks / 10000000 - Beginning) + " seconds)");
-                        
                     }
+
+                    Console.WriteLine("Finished (" + (DateTime.Now.Ticks / 10000000 - Beginning) + " seconds)");
+
                     Console.WriteLine("Success!");
                     Console.Write("Press any key to continue . . . ");
                     Console.ReadKey();
