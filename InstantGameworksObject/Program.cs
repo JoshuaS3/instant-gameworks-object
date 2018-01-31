@@ -17,39 +17,30 @@ namespace InstantGameworksObject
         static void Main()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Title = "Select files to convert OBJ files";
+            fileDialog.Title = "Select file to convert OBJ files";
             fileDialog.Filter = "OBJ files|*.obj";
-            fileDialog.Multiselect = true;
+            fileDialog.Multiselect = false;
             fileDialog.InitialDirectory = @"C:\";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                string[] fileNames = fileDialog.FileNames;
+                string fileName = fileDialog.FileName;
 
-                FolderBrowserDialog outputDialog = new FolderBrowserDialog();
-                outputDialog.Description = "Select folder to output files to";
-                outputDialog.RootFolder = Environment.SpecialFolder.Desktop;
+                SaveFileDialog outputDialog = new SaveFileDialog();
+                outputDialog.Title = "Select output location";
+                outputDialog.Filter = "IGWO files|*.igwo";
+                outputDialog.InitialDirectory = @"C:\";
+                outputDialog.OverwritePrompt = true;
                 if (outputDialog.ShowDialog() == DialogResult.OK)
                 {
 
-                    string outputPath = outputDialog.SelectedPath;
-
-                    IFormatter formatter = new BinaryFormatter();
-
+                    string outputFile = outputDialog.FileName;
+                    
                     long Beginning = DateTime.Now.Ticks / 10000000;
-                    foreach (string file in fileNames)
-                    {
-                        Console.WriteLine("Begin " + Path.GetFileName(file));
+                    
 
-                        var output = InstantGameworksObject.ConvertOBJToIGWO(File.ReadAllLines(file));
-
-                        Console.WriteLine("Writing file");
-
-                        Stream fileOutputStream = new FileStream(outputPath + @"\" + Path.GetFileNameWithoutExtension(file) + ".igwo", FileMode.Create, FileAccess.Write, FileShare.None);
-                        formatter.Serialize(fileOutputStream, output);
-
-
-                        Console.WriteLine(outputPath + @"\" + Path.GetFileNameWithoutExtension(file) + ".igwo");
-                    }
+                    var output = InstantGameworksObject.ConvertOBJToIGWO(File.ReadAllLines(fileName));
+                    DataHandler.WriteFile(outputFile, output);
+                    Console.WriteLine(outputFile);
 
                     Console.WriteLine("Finished (" + (DateTime.Now.Ticks / 10000000 - Beginning) + " seconds)");
 

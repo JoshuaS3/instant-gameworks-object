@@ -8,73 +8,67 @@ using System.IO;
 
 namespace InstantGameworksObject
 {
-    class InstantGameworksObject
+    [Serializable()]
+    public struct InstantGameworksObjectData
     {
-        [Serializable()]
-        public struct InstantGameworksObjectData
-        {
-            public Position[] Positions;
-            public TextureCoordinates[] TextureCoordinates;
-            public Position[] Normals;
+        public Position[] Positions;
+        public TextureCoordinates[] TextureCoordinates;
+        public Position[] Normals;
 
-            public Face[] Faces;
-        }
-        
-        public struct Position
-        {
-            public float X { get; set; }
-            public float Y { get; set; }
-            public float Z { get; set; }
-            public float W { get; set; }
-            public Position(float x, float y, float z)
-            {
-                X = x;
-                Y = y;
-                Z = z;
-                W = 1;
-            }
-            public Position(float x, float y, float z, float w)
-            {
-                X = x;
-                Y = y;
-                Z = z;
-                W = w;
-            }
-        }
-        
-        public struct TextureCoordinates
-        {
+        public Face[] Faces;
+    }
 
-            public float U { get; set; }
-            public float V { get; set; }
-            public float W { get; set; }
-            TextureCoordinates(float u, float v)
-            {
-                U = u;
-                V = v;
-                W = 0;
-            }
-            TextureCoordinates(float u, float v, float w)
-            {
-                U = u;
-                V = v;
-                W = w;
-            }
-        }
-        
-        public struct Vertex
+    [Serializable()]
+    public struct Position
+    {
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
+        public Position(float x, float y, float z)
         {
-            public int PositionIndex; //Where in the Positions list can I find this data? (gets rid of repitition)
-            public int TextureCoordinatesIndex;
-            public int NormalIndex;
+            X = x;
+            Y = y;
+            Z = z;
         }
-        
-        public struct Face
-        {
-            public Vertex[] Vertices;
-        }
+    }
 
-        
+    [Serializable()]
+    public struct TextureCoordinates
+    {
+
+        public float U { get; set; }
+        public float V { get; set; }
+        public float W { get; set; }
+        TextureCoordinates(float u, float v)
+        {
+            U = u;
+            V = v;
+            W = 0;
+        }
+        TextureCoordinates(float u, float v, float w)
+        {
+            U = u;
+            V = v;
+            W = w;
+        }
+    }
+
+    [Serializable()]
+    public struct Vertex
+    {
+        public int PositionIndex; //Where in the Positions list can I find this data? (gets rid of repitition)
+        public int TextureCoordinatesIndex;
+        public int NormalIndex;
+    }
+
+    [Serializable()]
+    public struct Face
+    {
+        public Vertex[] Vertices;
+    }
+
+    public class InstantGameworksObject
+    {
         public static InstantGameworksObjectData ConvertOBJToIGWO(string[] OBJContent)
         {
             InstantGameworksObjectData _newObject = new InstantGameworksObjectData();
