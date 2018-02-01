@@ -8,70 +8,11 @@ using System.IO;
 
 namespace InstantGameworksObject
 {
-    [Serializable()]
-    public struct InstantGameworksObjectData
+    public class Convert
     {
-        public Position[] Positions;
-        public TextureCoordinates[] TextureCoordinates;
-        public Position[] Normals;
-
-        public Face[] Faces;
-    }
-
-    [Serializable()]
-    public struct Position
-    {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
-        public Position(float x, float y, float z)
+        public static InstantGameworksObject ConvertOBJToIGWO(string[] OBJContent)
         {
-            X = x;
-            Y = y;
-            Z = z;
-        }
-    }
-
-    [Serializable()]
-    public struct TextureCoordinates
-    {
-
-        public float U { get; set; }
-        public float V { get; set; }
-        public float W { get; set; }
-        TextureCoordinates(float u, float v)
-        {
-            U = u;
-            V = v;
-            W = 0;
-        }
-        TextureCoordinates(float u, float v, float w)
-        {
-            U = u;
-            V = v;
-            W = w;
-        }
-    }
-
-    [Serializable()]
-    public struct Vertex
-    {
-        public int PositionIndex; //Where in the Positions list can I find this data? (gets rid of repitition)
-        public int TextureCoordinatesIndex;
-        public int NormalIndex;
-    }
-
-    [Serializable()]
-    public struct Face
-    {
-        public Vertex[] Vertices;
-    }
-
-    public class InstantGameworksObject
-    {
-        public static InstantGameworksObjectData ConvertOBJToIGWO(string[] OBJContent)
-        {
-            InstantGameworksObjectData _newObject = new InstantGameworksObjectData();
+            InstantGameworksObject _newObject = new InstantGameworksObject();
 
             List<Position> _vertexPositions = new List<Position>();
             List<TextureCoordinates> _vertexTextureCoordinates = new List<TextureCoordinates>();
@@ -84,21 +25,21 @@ namespace InstantGameworksObject
             foreach (string line in OBJContent)
             {
                 string[] splitLine = line.Split(' ');
-                if (line.StartsWith("v"))
+                if (line.StartsWith("v "))
                 {
                     float x = float.Parse(splitLine[1]);
                     float y = float.Parse(splitLine[2]);
                     float z = float.Parse(splitLine[3]);
                     _vertexPositions.Add(new Position(x, y, z));
                 }
-                else if (line.StartsWith("vn"))
+                if (line.StartsWith("vn "))
                 {
                     float x = float.Parse(splitLine[1]);
                     float y = float.Parse(splitLine[2]);
                     float z = float.Parse(splitLine[3]);
                     _vertexNormals.Add(new Position(x, y, z));
                 }
-                else if (line.StartsWith("vt"))
+                if (line.StartsWith("vt "))
                 {
                     float u = float.Parse(splitLine[1]);
                     float v = float.Parse(splitLine[2]);
@@ -109,7 +50,7 @@ namespace InstantGameworksObject
                     }
                     _vertexNormals.Add(new Position(u, v, w));
                 }
-                else if (line.StartsWith("f"))
+                if (line.StartsWith("f "))
                 {
                     Face thisFace = new Face();
                     Vertex[] theseVertices = new Vertex[3];

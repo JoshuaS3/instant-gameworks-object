@@ -38,7 +38,13 @@ namespace InstantGameworksObject
                     long Beginning = DateTime.Now.Ticks / 10000000;
                     
 
-                    var output = InstantGameworksObject.ConvertOBJToIGWO(File.ReadAllLines(fileName));
+                    var output = Convert.ConvertOBJToIGWO(File.ReadAllLines(fileName));
+
+                    Console.WriteLine(output.Positions.Length + " vertices");
+                    Console.WriteLine(output.TextureCoordinates.Length + " texture coordinates");
+                    Console.WriteLine(output.Normals.Length + " normals");
+                    Console.WriteLine(output.Faces.Length + " faces");
+
                     DataHandler.WriteFile(outputFile, output);
                     Console.WriteLine(outputFile);
 

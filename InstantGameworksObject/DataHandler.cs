@@ -8,13 +8,67 @@ using System.IO;
 
 namespace InstantGameworksObject
 {
+    public struct InstantGameworksObject
+    {
+        public Position[] Positions;
+        public TextureCoordinates[] TextureCoordinates;
+        public Position[] Normals;
+
+        public Face[] Faces;
+    }
+
+    public struct Position
+    {
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
+        public Position(float x, float y, float z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+    }
+
+    public struct TextureCoordinates
+    {
+
+        public float U { get; set; }
+        public float V { get; set; }
+        public float W { get; set; }
+        TextureCoordinates(float u, float v)
+        {
+            U = u;
+            V = v;
+            W = 0;
+        }
+        TextureCoordinates(float u, float v, float w)
+        {
+            U = u;
+            V = v;
+            W = w;
+        }
+    }
+
+    public struct Vertex
+    {
+        public int PositionIndex; //Where in the Positions list can I find this data? (gets rid of repitition)
+        public int TextureCoordinatesIndex;
+        public int NormalIndex;
+    }
+
+    public struct Face
+    {
+        public Vertex[] Vertices;
+    }
+
     public class DataHandler
     {
-        public static void WriteFile(string fileLocation, InstantGameworksObjectData objectData)
+        public static void WriteFile(string fileLocation, InstantGameworksObject objectData)
         {
             Stream _fileStream = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.None);
             BinaryWriter _binaryWriter = new BinaryWriter(_fileStream);
-            
+
 
             _binaryWriter.Write('P'); //indicate beginning of positions array
             _binaryWriter.Write(objectData.Positions.Length);
@@ -54,15 +108,15 @@ namespace InstantGameworksObject
                     _binaryWriter.Write(vertex.NormalIndex);
                 }
             }
-            
+
 
             _binaryWriter.Close();
             _fileStream.Close();
         }
 
-        public static InstantGameworksObjectData ReadFile(string fileLocation)
+        public static InstantGameworksObject ReadFile(string fileLocation)
         {
-            InstantGameworksObjectData objectData = new InstantGameworksObjectData();
+            InstantGameworksObject objectData = new InstantGameworksObject();
 
             Stream _fileStream = new FileStream(fileLocation, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReader _binaryReader = new BinaryReader(_fileStream);
@@ -71,7 +125,7 @@ namespace InstantGameworksObject
             List<TextureCoordinates> textureData = new List<TextureCoordinates>();
             List<Position> normalData = new List<Position>();
             List<Face> faceData = new List<Face>();
-            
+
             int arrayLength;
 
             _binaryReader.ReadChar(); //'P' for position
@@ -112,6 +166,7 @@ namespace InstantGameworksObject
             for (int i = 0; i < arrayLength; i++)
             {
                 Face newFace = new Face();
+                newFace.Vertices = new Vertex[3];
                 for (int x = 0; x < 3; x++) //for each vertex
                 {
                     Vertex newVertex = new Vertex();
@@ -127,7 +182,7 @@ namespace InstantGameworksObject
             objectData.TextureCoordinates = textureData.ToArray();
             objectData.Normals = normalData.ToArray();
             objectData.Faces = faceData.ToArray();
-            
+
 
             _binaryReader.Close();
             _fileStream.Close();
