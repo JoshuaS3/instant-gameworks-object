@@ -21,7 +21,6 @@ namespace InstantGameworksObject
 
 
             // Parse data
-            Console.WriteLine("Parsing data");
             foreach (string line in OBJContent)
             {
                 string[] splitLine = line.Split(' ');
