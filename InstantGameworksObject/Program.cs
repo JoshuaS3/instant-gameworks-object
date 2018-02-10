@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
@@ -41,7 +42,8 @@ namespace InstantGameworksObject
                     Console.WriteLine();
                     Console.WriteLine("Beginning conversion process");
 
-                    long Beginning = DateTime.Now.Ticks;
+                    Stopwatch timer = new Stopwatch();
+                    timer.Start();
                     
                     var output = Convert.ConvertOBJToIGWO(File.ReadAllLines(inputFile));
                     
@@ -60,11 +62,12 @@ namespace InstantGameworksObject
                     Console.WriteLine("Input file size:  " + inputSize/1024f + " KB\t(" + inputSize/1048576f + " MB)");
                     Console.WriteLine("Output file size: " + outputSize/1024f + " KB\t(" + outputSize / 1048576f + " MB)");
                     Console.WriteLine();
-                    Console.WriteLine("File conversion efficiency: " + ((float)inputSize/(float)outputSize)*100f + "% (output is " + ((float)outputSize/(float)inputSize)*100f + "% smaller)");
+                    Console.WriteLine("File conversion efficiency: " + ((float)inputSize/(float)outputSize)*100f + "% (output is " + ((float)outputSize/(float)inputSize)*100f + "% the size of the original)");
                     Console.WriteLine();
                     Console.WriteLine();
-                    
-                    Console.WriteLine("Finished (" + new TimeSpan(DateTime.Now.Ticks - Beginning).Milliseconds/1000f + " seconds)");
+
+                    timer.Stop();
+                    Console.WriteLine("Finished (" + timer.ElapsedTicks / 1000000f + " seconds)");
 
                     Console.WriteLine("Success!");
                     Console.Write("Press any key to continue . . . ");
