@@ -86,13 +86,13 @@ namespace InstantGameworksObject
                     _faces.Add(thisFace);
                 }
             }
-            
+
             _newObject.Positions = _vertexPositions.ToArray();
             _newObject.TextureCoordinates = _vertexTextureCoordinates.ToArray();
             _newObject.Normals = _vertexNormals.ToArray();
             _newObject.Faces = _faces.ToArray();
 
-            
+
             return _newObject;
         }
     }
